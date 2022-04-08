@@ -2,32 +2,21 @@
 
 一个简单的 Kong 自定义插件示例，插件执行的逻辑是，读取 `X-Request-Base64` 请求 header 的字符串参数，然后对这个字符串执行 base64 解码，解码结果通过 header `X-Response-Decoded` 返回。
 
-安装这个插件，可以参考 Kong [官方文档](https://docs.konghq.com/1.5.x/plugin-development/distribution/)，支持两种方式。
-
-可以使用 LuaRocks 安装这个插件：
+在腾讯云云原生网关Kong中安装该插件:
 
 ``` bash
-$ git clone https://github.com/yulewei/kong-plugin-demo.git
-$ cd kong-plugin-demo
-# 构建并安装 rock
-$ sudo luarocks make
-# 查看安装的 rock
-$ luarocks show kong-plugin-demo
+git clone https://github.com/hongliang5316/kong-plugin-demo.git
+cd kong-plugin-demo
+# 将插件打成zip包
+zip -q -r demo.zip demo
+ls demo.zip
 ```
 
-或者，不通过 LuaRocks 安装，修改 `kong.conf`，把这个插件添加到 `lua_package_path` 路径中。示例如下：
+`demo.zip`可直接在腾讯云云原生网关Kong上进行自定义插件的上传以及安装
 
-```
-lua_package_path = /home/yulewei/kong-plugin-demo/?.lua;;
-```
+插件的配置可在`Konga`控制台中配置, 或者通过`Kong admin-api`来配置
 
-安装或者修改路径完成后，再修改 `kong.conf` 配置文件的 `plugins` 配置项，让 Kong 加载这个插件 `demo`：
-
-```
-plugins = bundled,demo
-```
-
-重启 Kong，执行 `kong restart` 或者 `kong prepare && kong reload`。如果启动正常，就能通过 Admin API 查看到这个被加载到的插件：
+以下是通过`Kong admin-api`的方式配置:
 
 ```
 $ curl -s http://localhost:8001/plugins/enabled | grep demo
